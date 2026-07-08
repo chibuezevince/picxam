@@ -1,0 +1,2 @@
+{# templates/account/email/email_already_exists_subject.txt #}
+Attempted Signup With Your Email Address
