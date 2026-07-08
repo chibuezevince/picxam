@@ -45,4 +45,4 @@ core/static/dist/
 *.sln
 *.sw?
 
-dev.ps1
+*.ps1
