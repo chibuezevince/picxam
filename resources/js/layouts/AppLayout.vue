@@ -45,8 +45,8 @@ onUnmounted(() => document.removeEventListener("keydown", handleKeydown))
       style="
         background-image: radial-gradient(
           circle,
-          rgba(58, 255, 140, 0.1) 1.5px,
-          transparent 1.5px
+          rgba(58, 255, 140, 0.25) 2px,
+          transparent 2px
         );
         background-size: 28px 28px;
       "
@@ -152,8 +152,8 @@ onUnmounted(() => document.removeEventListener("keydown", handleKeydown))
       ]"
       :style="{
         transition: `all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) ${i * 0.04}s`,
-        bottom: menuOpen ? `${120 + (navItems.length - 1 - i) * 76}px` : '28px',
-        right: '28px',
+        bottom: menuOpen ? `${120 + (navItems.length - 1 - i) * 76}px` : '20px',
+        right: '20px',
         transform: menuOpen
           ? 'translateX(0) scale(1)'
           : 'translateX(20px) scale(0.6)',
@@ -175,7 +175,16 @@ onUnmounted(() => document.removeEventListener("keydown", handleKeydown))
 
     <button
       @click="toggleMenu"
-      class="fixed bottom-7 right-7 z-70 w-14 h-14 bg-[#3aff8c] text-[#050508] flex items-center justify-center hover:bg-white transition-colors duration-200 rounded-full shadow-lg shadow-[#3aff8c]/20"
+      class="fixed bottom-3 right-5 z-70 w-14 h-14 text-[#050508] flex items-center justify-center transition-all duration-200 rounded-full shadow-[0_4px_12px_rgba(58,255,140,0.3)]"
+      style="
+        background: radial-gradient(
+          circle at 35% 30%,
+          #7affb8 0%,
+          #2ae67a 40%,
+          #0d4f2a 80%,
+          #050508 100%
+        );
+      "
     >
       <svg
         v-if="!menuOpen"
@@ -185,8 +194,16 @@ onUnmounted(() => document.removeEventListener("keydown", handleKeydown))
         stroke-width="2"
         class="w-6 h-6"
       >
-        <circle cx="12" cy="12" r="3" />
-        <circle cx="12" cy="12" r="7" />
+        <circle
+          cx="12"
+          cy="12"
+          r="3"
+        />
+        <circle
+          cx="12"
+          cy="12"
+          r="7"
+        />
       </svg>
       <svg
         v-else

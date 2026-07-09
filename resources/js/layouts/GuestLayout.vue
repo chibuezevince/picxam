@@ -12,8 +12,8 @@ import { Toaster } from "vue-sonner"
       style="
         background-image: radial-gradient(
           circle,
-          rgba(58, 255, 140, 0.15) 1.5px,
-          transparent 1.5px
+          rgba(58, 255, 140, 0.25) 2px,
+          transparent 2px
         );
         background-size: 28px 28px;
       "

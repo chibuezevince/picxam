@@ -15,3 +15,10 @@ export type User = {
   name: string
   email: `${string}@${string}`
 }
+
+export type RecentDocument = {
+  title: string
+  questions_count: number
+  quizzes_count: number
+  created_at: string
+}

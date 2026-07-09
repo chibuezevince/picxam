@@ -16,4 +16,5 @@ urlpatterns = [
     path("reset-password/<str:key>/", views.reset_password, name="reset_password"),
     
     path("dashboard", views.dashboard, name="dashboard"),
+    path("start", views.start, name="start"),
 ]
