@@ -61,9 +61,7 @@ class QuizAttempt(models.Model):
     user = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, related_name="quiz_attempts"
     )
-    quiz = models.ForeignKey(
-        Quiz, on_delete=models.CASCADE, related_name="attempts"
-    )
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name="attempts")
     score = models.IntegerField(null=True, blank=True)
     is_completed = models.BooleanField(default=False)
     started_at = models.DateTimeField(null=True, blank=True)
@@ -73,9 +71,7 @@ class QuizAttempt(models.Model):
 
 
 class Question(models.Model):
-    quiz = models.ForeignKey(
-        Quiz, on_delete=models.CASCADE, related_name="questions"
-    )
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name="questions")
     image = models.TextField(max_length=255)
     text = models.TextField(null=True, blank=True)
     answer = models.TextField(null=True, blank=True)
@@ -113,3 +109,10 @@ class Answer(models.Model):
                 fields=["user", "question"], name="unique_user_question"
             ),
         ]
+
+
+class Setting(models.Model):
+    key = models.CharField(unique=True, max_length=100)
+    value = models.JSONField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

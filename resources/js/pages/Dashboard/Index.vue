@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { Head } from "@inertiajs/vue3"
-import AppLayout from "../layouts/AppLayout.vue"
-import type { RecentDocument, User } from "../types/index.ts"
-import StatsSection from "../components/dashboard/StatsSection.vue"
-import RecentActivities from "../components/dashboard/RecentActivities.vue"
-import QuickUpload from "../components/dashboard/QuickUpload.vue"
+import { Head, Link } from "@inertiajs/vue3"
+import AppLayout from "../../layouts/AppLayout.vue"
+import type { RecentDocument, User } from "../../types/index.ts"
+import StatsSection from "../../components/dashboard/StatsSection.vue"
+import RecentActivities from "../../components/dashboard/RecentActivities.vue"
+import QuickUpload from "../../components/dashboard/QuickUpload.vue"
 
 defineOptions({
   layout: AppLayout,
@@ -42,13 +42,14 @@ const props = defineProps<{
         <span class="text-gray-600 font-light">ready to generate?</span>
       </h1>
       <div class="flex items-center gap-3">
-        <button
-          class="bg-[#3aff8c] text-[#050508] text-xs font-bold px-5 py-2.5 tracking-wider uppercase hover:bg-white transition-colors"
+        <Link
+          href="/start"
+          class="bg-[#3aff8c] text-[#050508] text-xs font-bold px-5 py-2.5 tracking-wider uppercase hover:bg-white transition-colors inline-block"
         >
           New Document
-        </button>
+        </Link>
         <button
-          class="border border-[#2a2a30] text-xs text-gray-400 px-5 py-2.5 tracking-wider uppercase hover:border-gray-500 hover:text-gray-200 transition-colors"
+          class="cursor-pointer border border-[#2a2a30] text-xs text-gray-400 px-5 py-2.5 tracking-wider uppercase hover:border-gray-500 hover:text-gray-200 transition-colors"
         >
           View All
         </button>

@@ -22,3 +22,9 @@ export type RecentDocument = {
   quizzes_count: number
   created_at: string
 }
+
+export type QuizGenerationForm = {
+  document: File | null
+  questions_count: number
+  quiz_type: string
+}

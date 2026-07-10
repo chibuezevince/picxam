@@ -6,11 +6,13 @@ withDefaults(
     type?: "button" | "submit" | "reset" | undefined
     loading?: boolean
     disabled?: boolean
+    hideArrow?: boolean
   }>(),
   {
     type: "submit",
     loading: false,
     disabled: false,
+    hideArrow: false,
   },
 )
 </script>
@@ -23,7 +25,13 @@ withDefaults(
   >
     <span v-if="loading">Processing</span>
     <slot v-else />
-    <ArrowRightIcon class="size-5" v-if="!loading" />
-    <ArrowPathIcon class="size-5 animate-spin" v-else />
+    <ArrowRightIcon
+      class="size-5"
+      v-if="!loading && !hideArrow"
+    />
+    <ArrowPathIcon
+      class="size-5 animate-spin"
+      v-if="loading"
+    />
   </button>
 </template>

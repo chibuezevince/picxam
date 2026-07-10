@@ -10,7 +10,7 @@
       <p
         class="text-[10px] text-gray-600 mt-2 tracking-wider uppercase font-medium"
       >
-        PDF PNG JPG
+        DOCX PPTX PDF
       </p>
     </div>
     <div class="mt-6 border-t border-[#2a2a30] pt-5">
@@ -27,14 +27,14 @@
         <div
           class="border border-[#2a2a30] py-2.5 px-3 text-center hover:border-[#3aff8c]/40 transition-colors"
         >
-          <span class="text-xs font-semibold text-white block">PNG</span>
-          <span class="text-[10px] text-gray-600">Images</span>
+          <span class="text-xs font-semibold text-white block">PPTX</span>
+          <span class="text-[10px] text-gray-600">Slides</span>
         </div>
         <div
           class="border border-[#2a2a30] py-2.5 px-3 text-center hover:border-[#3aff8c]/40 transition-colors"
         >
-          <span class="text-xs font-semibold text-white block">JPG</span>
-          <span class="text-[10px] text-gray-600">Images</span>
+          <span class="text-xs font-semibold text-white block">DOCX</span>
+          <span class="text-[10px] text-gray-600">Documents</span>
         </div>
       </div>
       <div class="mt-3 flex items-center gap-2 text-[10px] text-gray-600">

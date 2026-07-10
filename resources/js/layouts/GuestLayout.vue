@@ -25,8 +25,8 @@ import { Toaster } from "vue-sonner"
           class="w-full max-w-350 text-white p-6 md:p-12 lg:p-16 relative flex flex-col"
           style="
             background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(2px);
-            -webkit-backdrop-filter: blur(2px);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
             border: 1px solid rgba(255, 255, 255, 0.08);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
           "

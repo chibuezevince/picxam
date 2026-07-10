@@ -17,7 +17,7 @@ const request = async (
       method,
       headers: {
         "Content-Type": "application/json",
-        "X-CSRFToken": getCookie("csrftoken") ?? "",
+        "X-XSRF-Token": getCookie("XSRF-TOKEN") ?? "",
       },
       credentials: "include",
       body: body ? JSON.stringify(body) : undefined,

@@ -1,5 +1,6 @@
-from inertia import inertia
+from inertia import inertia, render as inertia_render
 from django.contrib.auth.decorators import login_required
+from core.controllers.quiz_generation_controller import handle
 from core.middlewares import pending_required, guest_required
 from inertia.http import encrypt_history
 from django.db.models import Count
@@ -51,7 +52,7 @@ def reset_password(request, key):
 
 
 @login_required
-@inertia("Dashboard")
+@inertia("Dashboard/Index")
 def dashboard(request):
     encrypt_history(request)
     return {
@@ -72,6 +73,8 @@ def dashboard(request):
 
 
 @login_required
-@inertia("Start")
 def start(request):
-    return {}
+    if request.method == "POST":
+        return handle(request)
+
+    return inertia_render(request, "Dashboard/Start")

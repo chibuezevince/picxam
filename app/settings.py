@@ -237,4 +237,8 @@ DJANGO_VITE = {
         / "manifest.json",
     }
 }
+CSRF_COOKIE_NAME = "XSRF-TOKEN"
+CSRF_HEADER_NAME = "HTTP_X_XSRF_TOKEN"
 INERTIA_LAYOUT = "base.html"
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
