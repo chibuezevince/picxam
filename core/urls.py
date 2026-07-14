@@ -18,4 +18,6 @@ urlpatterns = [
     path("dashboard", views.dashboard, name="dashboard"),
     
     path("start", views.start, name="start"),
+    path("quiz/<str:attempt_reference>/", views.start_quiz, name="start_quiz"),
+    
 ]

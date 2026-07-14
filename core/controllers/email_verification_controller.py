@@ -8,18 +8,14 @@ from allauth.account.internal.flows.email_verification import (
 )
 from django.shortcuts import redirect
 
+from core.logger import info
+
 
 class RequestNewCodeView(View):
     def post(self, request):
-        try:
-            data = json.loads(request.body)
-        except (json.JSONDecodeError, UnicodeDecodeError):
-            return JsonResponse(
-                {"status": 400, "errors": [{"message": "Invalid JSON body"}]},
-                status=400,
-            )
 
-        email = data.get("email")
+        pending_state = request.session.get("account_login")
+        email = pending_state["email"]
         if not email:
             return JsonResponse(
                 {

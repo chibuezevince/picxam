@@ -149,126 +149,90 @@ onUnmounted(() => document.removeEventListener("keydown", handleKeydown))
     </transition>
 
     <div
-      v-for="(item, i) in navItems"
-      :key="item.label"
-      class="fixed z-60 flex items-center gap-3"
-      :class="[
-        menuOpen && !animating
-          ? 'opacity-100 pointer-events-auto'
-          : 'opacity-0 pointer-events-none',
-      ]"
-      :style="{
-        transition: `all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) ${i * 0.04}s`,
-        bottom: menuOpen ? `${120 + (navItems.length - 1 - i) * 76}px` : '20px',
-        right: '20px',
-        transform: menuOpen
-          ? 'translateX(0) scale(1)'
-          : 'translateX(20px) scale(0.6)',
-      }"
+      v-if="!menuOpen"
+      class="fixed left-0 top-1/2 -translate-y-1/2 z-70"
     >
-      <p
-        class="text-xs text-gray-400 tracking-wider uppercase font-medium whitespace-nowrap"
-        :class="{ 'text-white': menuOpen }"
-      >
-        {{ item.label }}
-      </p>
       <button
-        @click="handleNav(item)"
-        class="w-12 h-12 border-2 flex items-center justify-center text-lg transition-all duration-200"
-        :class="[
-          item.color === 'red'
-            ? 'bg-[#121214] border-red-800 text-red-400 hover:bg-red-600 hover:text-white hover:border-red-600'
-            : 'bg-[#121214] border-[#2a2a30] text-white hover:bg-[#3aff8c] hover:text-[#050508] hover:border-[#3aff8c]',
-        ]"
+        @click="toggleMenu"
+        class="relative cursor-pointer group focus:outline-none"
       >
-        {{ item.icon }}
+        <div
+          class="w-10 h-32 md:h-40 border-l-0 border-t border-r border-b border-[#3aff8c]/30 flex items-center justify-center transition-all duration-300 hover:border-[#3aff8c]/60"
+          style="
+            background: rgba(15, 15, 18, 0.85);
+            backdrop-filter: blur(1px);
+            -webkit-backdrop-filter: blur(1px);
+            box-shadow:
+              4px 0 20px rgba(0, 0, 0, 0.5),
+              0 0 12px rgba(58, 255, 140, 0.08);
+          "
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            class="w-4 h-4 text-gray-400 transition-all duration-300 group-hover:text-[#3aff8c]"
+          >
+            <path d="M4 6h16" />
+            <path d="M4 12h16" />
+            <path d="M4 18h16" />
+          </svg>
+        </div>
       </button>
     </div>
 
-    <button
-      @click="toggleMenu"
-      class="fixed bottom-3 right-5 z-70 w-14 h-14 text-[#050508] flex items-center justify-center rounded-full group animate-[float_3s_ease-in-out_infinite]"
+    <div
+      class="fixed left-0 top-0 h-full z-60 flex items-center pointer-events-none"
     >
-      <span class="absolute inset-0 rounded-full">
-        <svg
-          class="w-full h-full animate-spin-slow"
-          viewBox="0 0 56 56"
-          fill="none"
+      <div
+        class="h-[80vh] border-t border-r border-b border-[#3aff8c]/30 flex flex-col items-center justify-center gap-6 px-5 transition-all duration-400"
+        :class="[
+          menuOpen && !animating
+            ? 'translate-x-0 opacity-100 pointer-events-auto'
+            : '-translate-x-full opacity-0 pointer-events-none',
+        ]"
+        style="
+          background: rgba(8, 8, 12, 0.92);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          box-shadow: 4px 0 32px rgba(0, 0, 0, 0.6);
+          border-left: none;
+          transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        "
+      >
+        <div
+          v-for="(item, i) in navItems"
+          :key="item.label"
+          class="flex flex-col items-center gap-2 transition-all duration-300 cursor-pointer group"
+          :class="[
+            menuOpen && !animating
+              ? 'opacity-100 translate-x-0'
+              : 'opacity-0 -translate-x-4',
+          ]"
+          :style="{
+            transitionDelay: menuOpen ? `${i * 0.06}s` : '0s',
+          }"
+          @click="handleNav(item)"
         >
-          <circle
-            cx="28"
-            cy="28"
-            r="26"
-            stroke="currentColor"
-            stroke-width="1.5"
-            class="text-[#3aff8c]/20"
-          />
-          <circle
-            cx="28"
-            cy="28"
-            r="26"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-dasharray="4 8"
-            class="text-[#3aff8c]/60"
-            pathLength="1"
-            stroke-linecap="round"
-          />
-        </svg>
-      </span>
-
-      <span
-        class="absolute -inset-1 rounded-full group-hover:opacity-80 transition-opacity duration-500"
-        style="
-          background: radial-gradient(
-            circle,
-            rgba(58, 255, 140, 0.15) 0%,
-            transparent 70%
-          );
-        "
-      />
-
-      <span
-        class="absolute inset-0.5 rounded-full group-hover:scale-110 transition-transform duration-500"
-        style="
-          background: radial-gradient(
-            circle at 35% 28%,
-            #7affb8 0%,
-            #2ae67a 35%,
-            #0d4f2a 70%,
-            #050508 100%
-          );
-          box-shadow:
-            0 4px 16px rgba(58, 255, 140, 0.3),
-            inset 0 -2px 4px rgba(0, 0, 0, 0.3);
-        "
-      />
-
-      <svg
-        v-if="!menuOpen"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        class="w-5 h-5 relative z-10 transition-all duration-300 group-hover:scale-110"
-      >
-        <path d="M4 6h16" />
-        <path d="M4 12h16" />
-        <path d="M4 18h16" />
-      </svg>
-
-      <svg
-        v-else
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        class="w-5 h-5 relative z-10 transition-all duration-300"
-      >
-        <path d="M18 6L6 18" />
-        <path d="M6 6l12 12" />
-      </svg>
-    </button>
+          <button
+            class="w-12 h-12 border-2 flex items-center justify-center text-lg transition-all duration-200"
+            :class="[
+              item.color === 'red'
+                ? 'bg-[#121214] border-red-800 text-red-400 hover:bg-red-600 hover:text-white hover:border-red-600'
+                : 'bg-[#121214] border-[#2a2a30] text-white hover:bg-[#3aff8c] hover:text-[#050508] hover:border-[#3aff8c]',
+            ]"
+          >
+            {{ item.icon }}
+          </button>
+          <p
+            class="text-[10px] text-gray-500 tracking-widest uppercase whitespace-nowrap"
+          >
+            {{ item.label }}
+          </p>
+        </div>
+      </div>
+    </div>
   </div>
 
   <Toaster

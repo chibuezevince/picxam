@@ -57,8 +57,8 @@ export const signup = (form: SignupForm) =>
 export const verifyEmail = (key: string) =>
   request("/auth/email/verify", "POST", { key })
 
-export const resendVerificationEmail = (email: string) =>
-  request("/auth/request-new-code", "POST", { email }, false)
+export const resendVerificationEmail = () =>
+  request("/auth/request-new-code", "POST", {}, false)
 
 export const logout = async () => {
   await request("/auth/session", "DELETE")

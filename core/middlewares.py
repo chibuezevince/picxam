@@ -42,7 +42,14 @@ def inertia_share(get_response):
                 "name": request.user.name if request.user.is_authenticated else None,
                 "email": request.user.email if request.user.is_authenticated else None,
             },
-            accepted_file_types=[key.replace('.', '') for key in get_setting("accepted_file_types").keys()],
+            accepted_file_types=(
+                [
+                    key.replace(".", "")
+                    for key in get_setting("accepted_file_types").keys()
+                ]
+                if get_setting("accepted_file_types")
+                else []
+            ),
         )
 
         return get_response(request)

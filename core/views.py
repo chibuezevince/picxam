@@ -38,7 +38,7 @@ def onboarding(request):
 @guest_required()
 @inertia("Auth/VerifyEmail")
 def verify_email(request):
-    return {"email": request.session.get("email")}
+    return {}
 
 
 @inertia("Auth/ForgotPassword")
@@ -78,3 +78,8 @@ def start(request):
         return handle(request)
 
     return inertia_render(request, "Dashboard/Start")
+
+
+@login_required
+def start_quiz(request, attempt_reference):
+    return inertia_render(request, "Quiz/Index")

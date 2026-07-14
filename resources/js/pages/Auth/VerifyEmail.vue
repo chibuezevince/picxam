@@ -13,10 +13,6 @@ defineOptions({
   layout: GuestLayout,
 })
 
-const props = defineProps<{
-  email: string
-}>()
-
 const form = reactive(verifyEmailForm)
 
 const sanitize = (val: string) => val.replace(/[^a-zA-Z0-9]/g, "").slice(0, 4)
@@ -67,7 +63,7 @@ const handleVerify = async () => {
 
 const handleResend = async () => {
   form.resending = true
-  const response = await resendVerificationEmail(props.email)
+  const response = await resendVerificationEmail()
 
   form.resending = false
   if (!response) return
@@ -177,7 +173,7 @@ onMounted(() => {
             account.
           </p>
 
-          <div class="flex items-center justify-center gap-3">
+          <div class="flex items-center justify-between gap-3 mb-4">
             <input
               v-model="codeGroup1"
               type="text"
@@ -185,7 +181,7 @@ onMounted(() => {
               maxlength="4"
               placeholder="QJVF"
               :disabled="form.verifying"
-              class="w-28 h-13 bg-[#121214] border-2 px-4 text-center text-xl font-bold text-white placeholder:text-[#555] outline-none transition-all"
+              class="w-[50%] h-13 bg-[#121214] border-2 px-4 text-center text-xl font-bold text-white placeholder:text-[#555] outline-none transition-all"
               :class="
                 form.error
                   ? 'border-red-500/50 focus:border-red-500 focus:ring-1 focus:ring-red-500/30'
@@ -200,7 +196,7 @@ onMounted(() => {
               maxlength="4"
               placeholder="GWXW"
               :disabled="form.verifying"
-              class="w-28 h-13 bg-[#121214] border-2 px-4 text-center text-xl font-bold text-white placeholder:text-[#555] outline-none transition-all"
+              class="w-[50%] h-13 bg-[#121214] border-2 px-4 text-center text-xl font-bold text-white placeholder:text-[#555] outline-none transition-all"
               :class="
                 form.error
                   ? 'border-red-500/50 focus:border-red-500 focus:ring-1 focus:ring-red-500/30'
