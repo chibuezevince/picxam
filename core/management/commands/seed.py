@@ -11,7 +11,7 @@ class Command(BaseCommand):
         self.stdout.write("Seeding data...")
 
         QuizType.objects.create(
-            name="MCQ",
+            name="Multi Choice",
             slug="mcq",
         )
 

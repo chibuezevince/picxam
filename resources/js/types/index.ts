@@ -25,6 +25,24 @@ export type RecentDocument = {
 
 export type QuizGenerationForm = {
   document: File | null
-  questions_count: number
   quiz_type: string
+}
+
+export type Question = {
+  id: number
+  text: string
+  image: string
+  options: Option[]
+}
+
+export type Option = {
+  id: number
+  text: string
+}
+
+export type QuizAttempt = {
+  reference: string
+  quizType: string | null
+  currentIndex: number
+  answers: Record<number, number>
 }

@@ -5,6 +5,9 @@ import random
 from django.conf import settings
 from django.shortcuts import redirect
 from inertia import InertiaResponse
+from threading import Thread
+
+from core.ai_service import generate_questions
 from core.forms import QuizGenerationForm
 from core.helpers import extract_images, get_relative_path, upload_file
 from core.models import Document, DocumentImage, Quiz, QuizAttempt, QuizType
@@ -20,8 +23,6 @@ def handle(request):
     if form.is_valid() == False:
         flat = {field: ", ".join(errs) for field, errs in form.errors.items()}
         return error(request, flat, status=422)
-
-    questions_count = form.cleaned_data["questions_count"]
 
     uploaded_document = request.FILES["document"]
 
@@ -63,12 +64,13 @@ def handle(request):
             file_path=get_relative_path(image),
         )
 
-    quiz_type = QuizType.objects.filter(slug=form.cleaned_data["quiz_type"]).first()
-
     quiz = Quiz.objects.create(
-        document=document, user=request.user, quiz_type=quiz_type
+        document=document, user=request.user, quiz_type=form.cleaned_data["quiz_type"]
     )
 
     quiz_attempt = QuizAttempt.objects.create(user=request.user, quiz=quiz)
+
+    document_images = list(document.document_images.all())
+    Thread(target=generate_questions, args=(quiz, document_images)).start()
 
     return redirect(f"/quiz/{quiz_attempt.reference}")

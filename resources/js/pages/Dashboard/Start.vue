@@ -10,11 +10,9 @@ import {
   ArrowUpTrayIcon,
   BoltIcon,
   DocumentTextIcon,
-  ExclamationCircleIcon,
   ExclamationTriangleIcon,
   XMarkIcon,
 } from "@heroicons/vue/24/outline"
-import SlideInput from "../../components/form/SlideInput.vue"
 import FormBadge from "../../components/form/FormBadge.vue"
 import Button from "../../components/Button.vue"
 
@@ -22,11 +20,11 @@ const { open, onChange } = useFileDialog({
   accept: ".docx,.pptx,.pdf",
 })
 
-const allowedFileTypes: string[] = usePage().props.accepted_file_types as string[]
+const allowedFileTypes: string[] = usePage().props
+  .accepted_file_types as string[]
 
 const form = useForm<QuizGenerationForm>({
   document: null,
-  questions_count: 10,
   quiz_type: "mcq",
 })
 
@@ -58,12 +56,6 @@ const formattedFileTypes = computed(() =>
     .map((t) => t.replace(".", "").toUpperCase())
     .join(" &middot; "),
 )
-
-const countNote = computed(() => {
-  if (form.questions_count >= 25)
-    return "AI may generate fewer if it exhausts the source material"
-  return ""
-})
 
 const onDragOver = (e: DragEvent) => {
   e.preventDefault()
@@ -201,38 +193,18 @@ const fileSize = computed(() => {
       </div>
 
       <div class="md:col-span-2 flex flex-col p-8 md:p-10 lg:p-12">
-        <div class="mb-10">
-          <div class="flex items-center justify-between mb-4">
-            <span
-              class="text-[10px] text-gray-500 uppercase tracking-[0.15em] font-medium"
-              >Questions</span
+        <div class="mb-6">
+          <div class="border-2 border-[#3aff8c]/20 bg-[#3aff8c]/5 p-4">
+            <p
+              class="text-[10px] text-[#3aff8c]/90 uppercase tracking-[0.12em] font-medium"
             >
-            <span
-              class="text-2xl font-bold text-white tabular-nums tracking-tight"
-              >{{ form.questions_count }}</span
-            >
+              4 Questions Per Image
+            </p>
+            <p class="text-xs text-gray-400 mt-1.5 leading-relaxed">
+              Each extracted image from your document will generate 4 questions
+              automatically.
+            </p>
           </div>
-          <SlideInput
-            v-model="form.questions_count"
-            :min="10"
-            :max="30"
-          />
-          <p
-            v-if="countNote"
-            class="text-[10px] text-amber-500/80 mt-3 flex items-start gap-2 leading-relaxed"
-          >
-            <ExclamationCircleIcon class="size-4" />
-            <span
-              >AI may generate fewer if it exhausts the source material</span
-            >
-          </p>
-          <FormBadge
-            :show="!!form.errors.questions_count"
-            type="error"
-            class="mt-3"
-          >
-            {{ form.errors.questions_count }}
-          </FormBadge>
         </div>
 
         <div class="mb-10">

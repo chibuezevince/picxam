@@ -50,9 +50,4 @@ class QuizGenerationForm(forms.Form):
         required=True,
     )
 
-    questions_count = forms.IntegerField(
-        validators=[MinValueValidator(10), MaxValueValidator(30)],
-        required=True,
-    )
-
     quiz_type = forms.ModelChoiceField(QuizType.objects.all(), to_field_name="slug")

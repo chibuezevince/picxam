@@ -1,5 +1,9 @@
 import os
 
+import docx
+import fitz
+from pptx import Presentation
+
 from core.extract_images import extract_office, extract_pdf
 from core.models import Setting
 from django.conf import settings
@@ -69,3 +73,34 @@ def extract_images(
 def get_relative_path(absolute_path: str) -> str:
     """Convert an absolute path to one relative to MEDIA_ROOT."""
     return os.path.relpath(absolute_path, settings.MEDIA_ROOT)
+
+
+def extract_text(abs_path: str) -> str:
+    """Extracts text from PDF, PPTX, or DOCX files."""
+    path = Path(abs_path)
+    extension = path.suffix.lstrip(".").lower()
+
+    match extension:
+        case "pdf":
+            text_parts = []
+            with fitz.open(abs_path) as doc:
+                for page in doc:
+                    text_parts.append(page.get_text())
+            return "\n".join(text_parts)
+
+        case "pptx":
+            text_parts = []
+            prs = Presentation(abs_path)
+            for slide in prs.slides:
+                for shape in slide.shapes:
+                    if shape.has_text_frame:
+                        for paragraph in shape.text_frame.paragraphs:
+                            text_parts.append(paragraph.text)
+            return "\n".join(text_parts)
+
+        case "docx":
+            doc = docx.Document(abs_path)
+            return "\n".join(paragraph.text for paragraph in doc.paragraphs)
+
+        case _:
+            return ""
