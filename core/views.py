@@ -1,12 +1,14 @@
 from inertia import inertia, render as inertia_render
 from django.contrib.auth.decorators import login_required
 from core.controllers.quiz_generation_controller import handle
+from core.logger import info
 from core.middlewares import pending_required, guest_required
 from inertia.http import encrypt_history
 from django.db.models import Count
 from core.models import Option, Question, QuizAttempt
-from django.http import StreamingHttpResponse
+from django.http import Http404, StreamingHttpResponse
 import json
+import random
 
 
 @inertia("Home")
@@ -43,11 +45,13 @@ def verify_email(request):
     return {}
 
 
+@guest_required()
 @inertia("Auth/ForgotPassword")
 def forgot_password(request):
     return {}
 
 
+@guest_required()
 @inertia("Auth/ResetPassword")
 def reset_password(request, key):
     return {"resetKey": key}
@@ -84,25 +88,50 @@ def start(request):
 
 @login_required
 def start_quiz(request, attempt_reference):
+
+    attempt = QuizAttempt.objects.filter(
+        reference=attempt_reference, user=request.user
+    ).first()
+
+    if attempt is None:
+        raise Http404()
+
     attempt = (
         QuizAttempt.objects.filter(reference=attempt_reference, user=request.user)
         .select_related("quiz__quiz_type")
         .prefetch_related("answers")
         .first()
     )
+    quiz = attempt.quiz
     return inertia_render(
         request,
         "Quiz/Index",
         {
             "quizAttempt": {
                 "reference": attempt_reference,
-                "quizType": attempt.quiz.quiz_type.name if attempt else None,
+                "quizType": quiz.quiz_type.name if attempt else None,
                 "currentIndex": attempt.current_index,
+                "reasoning": attempt.reasoning or "",
                 "answers": {
                     answer.question_id: answer.option_id
                     for answer in attempt.answers.all()
                 },
             },
+            "questions": [
+                {
+                    "id": question.id,
+                    "text": question.text,
+                    "image": question.image.file_path if question.image else None,
+                    "options": [
+                        {"id": option.id, "text": option.text}
+                        for option in random.sample(
+                            list(question.options.all()),
+                            question.options.count(),
+                        )
+                    ],
+                }
+                for question in quiz.questions.all()
+            ],
         },
     )
 
@@ -123,12 +152,18 @@ def stream_questions(request, attempt_reference):
         yield f"data: {json.dumps({'type': 'connected'})}\n\n"
 
         sent_ids = set()
+        sent_reasoning = ""
 
         while True:
             attempt = QuizAttempt.objects.get(id=attempt.id)
             questions = (
                 attempt.quiz.questions.prefetch_related("options").all().order_by("id")
             )
+
+            if attempt.reasoning and attempt.reasoning != sent_reasoning:
+                new_part = attempt.reasoning[len(sent_reasoning) :]
+                sent_reasoning = attempt.reasoning
+                yield f"data: {json.dumps({'type': 'reasoning', 'text': new_part})}\n\n"
 
             for question in questions:
                 if question.id in sent_ids:
@@ -141,7 +176,10 @@ def stream_questions(request, attempt_reference):
                     "imageHash": str(question.image.hash) if question.image else None,
                     "options": [
                         {"id": option.id, "text": option.text}
-                        for option in question.options.all()
+                        for option in random.sample(
+                            list(question.options.all()),
+                            question.options.count(),
+                        )
                     ],
                     "generated": len(sent_ids),
                 }

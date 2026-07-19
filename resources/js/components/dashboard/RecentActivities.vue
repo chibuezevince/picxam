@@ -26,7 +26,7 @@ defineProps<{
       >
         <div class="relative mb-6">
           <div
-            class="w-16 h-16 rounded-full border border-[#3aff8c]/20 bg-[#3aff8c]/5 flex items-center justify-center"
+            class="w-16 h-16 border border-[#3aff8c]/20 bg-[#3aff8c]/5 flex items-center justify-center"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -44,7 +44,7 @@ defineProps<{
             </svg>
           </div>
           <span
-            class="absolute -top-0.5 -right-0.5 w-5 h-5 rounded-full bg-[#3aff8c] flex items-center justify-center"
+            class="absolute -top-0.5 -right-0.5 w-5 h-5 bg-[#3aff8c] flex items-center justify-center"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

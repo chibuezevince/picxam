@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { UserCircleIcon } from "@heroicons/vue/24/outline"
+import { UserIcon } from "@heroicons/vue/24/outline"
 import { Head, Link, usePage } from "@inertiajs/vue3"
 import { computed } from "vue"
 
@@ -123,7 +123,7 @@ const isActive = (path: string) => url.value === path
         class="bg-[#2cd476] cursor-pointer text-black px-5 py-2 flex items-center gap-2 text-xs font-semibold hover:bg-opacity-90 active:bg-black active:text-white transition-all"
       >
         Get Started
-        <UserCircleIcon class="size-4 text-black" />
+        <UserIcon class="size-4 text-black" />
       </Link>
     </div>
   </header>

@@ -7,7 +7,7 @@ import magic
 from core.helpers import get_setting
 from django.core.validators import MinValueValidator, MaxValueValidator
 
-from core.models import QuizType
+from core.models import QuizAttempt, QuizType
 
 
 class CustomSignupForm(forms.Form):
@@ -51,3 +51,13 @@ class QuizGenerationForm(forms.Form):
     )
 
     quiz_type = forms.ModelChoiceField(QuizType.objects.all(), to_field_name="slug")
+
+    difficulty = forms.ChoiceField(
+        choices=QuizAttempt.Difficulty.choices,
+        required=True,
+    )
+
+    thinking_effort = forms.ChoiceField(
+        choices=QuizAttempt.ThinkingEffort.choices, 
+        required=True,
+    )

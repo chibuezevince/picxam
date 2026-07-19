@@ -31,6 +31,7 @@ def handle(request):
     uploaded_document.seek(0)
 
     existing = Document.objects.filter(content_hash=content_hash).first()
+    # @TODO: Uncomment
     # if existing:
     #     return error(
     #         request,
@@ -68,9 +69,14 @@ def handle(request):
         document=document, user=request.user, quiz_type=form.cleaned_data["quiz_type"]
     )
 
-    quiz_attempt = QuizAttempt.objects.create(user=request.user, quiz=quiz)
+    quiz_attempt = QuizAttempt.objects.create(
+        user=request.user,
+        quiz=quiz,
+        thinking_effort=form.cleaned_data["thinking_effort"],
+        difficulty=form.cleaned_data["difficulty"]
+    )
 
     document_images = list(document.document_images.all())
-    Thread(target=generate_questions, args=(quiz, document_images)).start()
+    Thread(target=generate_questions, args=(document_images, quiz_attempt)).start()
 
     return redirect(f"/quiz/{quiz_attempt.reference}")

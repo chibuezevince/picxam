@@ -1,3 +1,4 @@
+from random import choice
 import uuid
 
 from django.db import models
@@ -68,8 +69,30 @@ class QuizAttempt(models.Model):
     current_index = models.IntegerField(default=1, blank=False)
     is_completed = models.BooleanField(default=False)
     questions_generated = models.BooleanField(default=False)
+    reasoning = models.TextField(blank=True, default="")
     started_at = models.DateTimeField(null=True, blank=True)
     reference = models.UUIDField(default=uuid.uuid4, editable=False)
+
+    class ThinkingEffort(models.Choices):
+        Thinking = "thinking"
+        NonThinking = "non-thinking"
+
+    thinking_effort = models.CharField(
+        max_length=15,
+        choices=ThinkingEffort.choices,
+        default=ThinkingEffort.Thinking,
+    )
+
+    class Difficulty(models.Choices):
+        Medium = "medium"
+        Hard = "hard"
+
+    difficulty = models.CharField(
+        max_length=8,
+        choices=Difficulty.choices,
+        default=Difficulty.Medium,
+    )
+
     completed_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

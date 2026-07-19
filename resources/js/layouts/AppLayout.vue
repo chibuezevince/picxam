@@ -50,12 +50,7 @@ onUnmounted(() => document.removeEventListener("keydown", handleKeydown))
     <div
       class="absolute inset-0"
       style="
-        background-image: radial-gradient(
-          circle,
-          rgba(58, 255, 140, 0.25) 2px,
-          transparent 2px
-        );
-        background-size: 28px 28px;
+        background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2728%27 height=%2728%27%3E%3Crect x=%2713%27 y=%2713%27 width=%272%27 height=%272%27 fill=%27rgba(58,255,140,0.75)%27/%3E%3C/svg%3E&quot;);
       "
     ></div>
 
@@ -143,7 +138,7 @@ onUnmounted(() => document.removeEventListener("keydown", handleKeydown))
     <transition name="fade">
       <div
         v-if="menuOpen"
-        class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50"
+        class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 cursor-pointer"
         @click="toggleMenu"
       />
     </transition>
@@ -216,7 +211,7 @@ onUnmounted(() => document.removeEventListener("keydown", handleKeydown))
           @click="handleNav(item)"
         >
           <button
-            class="w-12 h-12 border-2 flex items-center justify-center text-lg transition-all duration-200"
+            class="w-12 h-12 border-2 flex items-center justify-center text-lg transition-all duration-200 cursor-pointer"
             :class="[
               item.color === 'red'
                 ? 'bg-[#121214] border-red-800 text-red-400 hover:bg-red-600 hover:text-white hover:border-red-600'

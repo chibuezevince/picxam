@@ -26,6 +26,8 @@ export type RecentDocument = {
 export type QuizGenerationForm = {
   document: File | null
   quiz_type: string
+  thinking_effort: string
+  difficulty: string
 }
 
 export type Question = {
@@ -44,5 +46,11 @@ export type QuizAttempt = {
   reference: string
   quizType: string | null
   currentIndex: number
+  reasoning: string
   answers: Record<number, number>
+}
+
+export type ReasoningBox = {
+  text: string
+  container: HTMLElement | null
 }

@@ -11,7 +11,7 @@ export const sync = (
 ) => {
   const debouncedSync = useDebounceFn(
     async (questionId: number, optionId: number) => {
-      await fetch(`/quiz/${quizAttempt.reference}/sync`, {
+      await fetch(`/quiz/${quizAttempt.reference}/sync/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

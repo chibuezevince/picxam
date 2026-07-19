@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 @import "tailwindcss";
-
+@plugin "@tailwindcss/typography";
 * {
   font-family:
     "Poppins",
@@ -61,4 +61,92 @@
 .slide-error-leave-to {
   opacity: 0;
   transform: translateY(-4px);
+}
+
+.slide-next-enter-active,
+.slide-next-leave-active,
+.slide-prev-enter-active,
+.slide-prev-leave-active {
+  transition:
+    transform 0.2s cubic-bezier(0.25, 0.1, 0.25, 1),
+    filter 0.15s ease;
+  will-change: transform, filter;
+}
+
+.slide-next-leave-to {
+  transform: translateX(-40px) skewX(3deg) scaleX(0.92);
+  filter: blur(1px);
+}
+
+.slide-next-enter-from {
+  transform: translateX(40px) skewX(-3deg) scaleX(0.92);
+  filter: blur(1px);
+}
+
+.slide-prev-leave-to {
+  transform: translateX(40px) skewX(-3deg) scaleX(0.92);
+  filter: blur(1px);
+}
+
+.slide-prev-enter-from {
+  transform: translateX(-40px) skewX(3deg) scaleX(0.92);
+  filter: blur(1px);
+}
+
+.slide-next-enter-to,
+.slide-prev-enter-to {
+  transform: translateX(0) skewX(0) scaleX(1);
+  filter: blur(0);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.4s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.pop-in-enter-active {
+  transition:
+    opacity 0.35s ease-out,
+    transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.pop-in-enter-from {
+  opacity: 0;
+  transform: scale(0.5) translateY(-6px);
+}
+
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: #3aff8c transparent;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 3px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-button {
+  display: none;
+  height: 0;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+  border: none;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track-piece {
+  background: transparent;
+  border: none;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #3aff8c;
+  border: none;
+  border-radius: 0;
 }
