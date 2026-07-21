@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import type { Question } from "../../types"
 
+const emit = defineEmits<{
+  changeIndex: [i: number]
+}>()
+
 defineProps<{
   questions: Question[]
   currentIndex: number
@@ -20,7 +24,7 @@ defineProps<{
       <button
         v-for="i in questions.length"
         :key="i"
-        @click="currentIndex = i"
+        @click="emit('changeIndex', i)"
         class="w-7 h-7 text-[11px] font-semibold border transition-all duration-200 cursor-pointer"
         :class="[
           currentIndex === i

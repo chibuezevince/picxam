@@ -13,6 +13,7 @@
     "@inertiajs/core": "^2.3.27",
     "@inertiajs/vue3": "^2.3.27",
     "@vueuse/core": "^14.3.0",
+    "notiflix": "^3.2.8",
     "vue": "^3.5.38",
     "vue-sonner": "^2.0.9"
   },

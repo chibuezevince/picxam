@@ -13,6 +13,7 @@ import {
   ExclamationTriangleIcon,
   XMarkIcon,
 } from "@heroicons/vue/24/outline"
+import BackButton from "../../components/BackButton.vue"
 import FormBadge from "../../components/form/FormBadge.vue"
 import Button from "../../components/Button.vue"
 
@@ -90,7 +91,11 @@ const fileSize = computed(() => {
 <template>
   <Head title="Start" />
 
-  <div class="flex-1 flex p-0">
+  <div class="flex-1 flex flex-col overflow-y-auto">
+    <div class="px-8 md:px-12 lg:px-16 pt-6">
+      <BackButton label="Start" />
+    </div>
+
     <div
       class="w-full grid grid-cols-1 md:grid-cols-5 divide-y md:divide-y-0 md:divide-x divide-[#2a2a30]"
     >
@@ -195,7 +200,7 @@ const fileSize = computed(() => {
           </FormBadge>
         </div>
 
-        <div class="w-full mt-auto">
+        <div class="w-full mt-3">
           <div class="border-2 border-[#3aff8c]/20 bg-[#3aff8c]/5 p-4">
             <p
               class="text-[10px] text-[#3aff8c]/90 uppercase tracking-[0.12em] font-medium"
@@ -345,7 +350,8 @@ const fileSize = computed(() => {
               v-if="form.difficulty === 'hard'"
               class="mt-2 text-[10px] text-amber-400/70 leading-relaxed"
             >
-              Hard difficulty may take significantly more time to generate questions
+              Hard difficulty may take significantly more time to generate
+              questions
             </p>
             <FormBadge
               :show="!!form.errors.difficulty"

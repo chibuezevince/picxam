@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import { Head, Link } from "@inertiajs/vue3"
-import AppLayout from "../../layouts/AppLayout.vue"
-import { onMounted, reactive, ref, watch } from "vue"
-import { useEventSource, useSessionStorage } from "@vueuse/core"
-import type { Question, QuizAttempt, ReasoningBox } from "../../types/index.ts"
-import { sync } from "../../composables/useSyncQuiz.ts"
-import AiSummary from "../../components/quiz/AiSummary.vue"
-import LoadingSkeleton from "../../components/quiz/LoadingSkeleton.vue"
-import QuestionNumbers from "../../components/quiz/QuestionNumbers.vue"
-import QuestionArea from "../../components/quiz/QuestionArea.vue"
-
+import { Head } from '@inertiajs/vue3'
+import AppLayout from '../../layouts/AppLayout.vue'
+import { computed, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
+import { useEventSource, useSessionStorage } from '@vueuse/core'
+import type { Question, QuizAttempt, ReasoningBox } from '../../types/index.ts'
+import { sync } from '../../composables/useSyncQuiz.ts'
+import AiSummary from '../../components/quiz/AiSummary.vue'
+import BackButton from '../../components/BackButton.vue'
+import LoadingSkeleton from '../../components/quiz/LoadingSkeleton.vue'
+import QuestionNumbers from '../../components/quiz/QuestionNumbers.vue'
+import QuestionArea from '../../components/quiz/QuestionArea.vue'
+import { Confirm, Loading } from 'notiflix'
+import { loadingLogo } from '../../constants'
 defineOptions({
   layout: AppLayout,
 })
@@ -21,36 +23,99 @@ const props = defineProps<{
 
 const questions = ref<Question[]>(props.questions)
 const reasoningBox = reactive<ReasoningBox>({
-  text: props.quizAttempt.reasoning ?? "",
+  text: props.quizAttempt.reasoning ?? '',
   container: null as HTMLElement | null,
 })
-const currentIndex = ref<number>(props.quizAttempt.currentIndex)
+const currentIndex = useSessionStorage<number>(
+  `${props.quizAttempt.reference}-index`,
+  props.quizAttempt.currentIndex,
+)
+const isLastQuestion = computed<boolean>(
+  () => currentIndex.value === props.questions.length,
+)
+
+const progressPercent = computed(() => {
+  if (!props.questions.length) return 0
+  return Math.round((currentIndex.value / props.questions.length) * 100)
+})
+
+const lastAnswer = ref<Record<number, number>>({})
+
+const submitting = ref<boolean>(false)
 
 const selectedOptions = useSessionStorage<Record<number, number>>(
-  `quiz-${props.quizAttempt.reference}`,
+  `${props.quizAttempt.reference}-answers`,
   props.quizAttempt.answers,
 )
 
-const selectOption = (questionId: number, optionId: number) =>
-  (selectedOptions.value = { ...selectedOptions.value, [questionId]: optionId })
+const selectOption = (questionId: number, optionId: number) => {
+  lastAnswer.value = {}
+  lastAnswer.value = {
+    [questionId]: optionId,
+  }
+  selectedOptions.value = {
+    ...selectedOptions.value,
+    ...lastAnswer.value,
+  }
+}
 const questionsLoaded = ref(false)
-const direction = ref<"forward" | "backward">("forward")
+const direction = ref<'forward' | 'backward'>('forward')
 
-const goNext = () => {
-  if (currentIndex.value < questions.value.length) {
-    direction.value = "forward"
+const goNext = (forceSubmit = false) => {
+  if (!forceSubmit && currentIndex.value < questions.value.length) {
+    direction.value = 'forward'
     currentIndex.value++
+    return
+  }
+
+  if (isLastQuestion.value || forceSubmit) {
+    const answeredQuestionIds = Object.keys(selectedOptions.value)
+
+    const unansweredQuestions = props.questions.filter(
+      (question) => !answeredQuestionIds.includes(String(question.id)),
+    )
+
+    const unansweredIndex = props.questions.findIndex(
+      (question) => !answeredQuestionIds.includes(String(question.id)),
+    )
+
+    const submit = () => {
+      submitting.value = true
+      Loading.custom('Submitting Quiz...', {
+        customSvgCode: loadingLogo,
+      })
+    }
+
+    if (unansweredQuestions.length) {
+      Confirm.show(
+        'Unanswered Questions',
+        `You still have ${unansweredQuestions.length} unanswered ${unansweredQuestions.length == 1 ? 'question' : 'questions'}. Submit anyway?`,
+        'Yes, Submit',
+        'No, Cancel',
+        () => submit(),
+        () => {
+          if (unansweredIndex !== -1) currentIndex.value = unansweredIndex + 1
+        },
+        {
+          titleColor: '#f4fc03',
+        },
+      )
+
+      return
+    }
+
+    submit()
   }
 }
 
 const goPrevious = () => {
   if (currentIndex.value > 1) {
-    direction.value = "backward"
+    direction.value = 'backward'
     currentIndex.value--
   }
 }
 
-let reasoningQueue = ""
+let reasoningQueue = ''
 let reasoningWriting = false
 
 const typewriteReasoning = (text: string) => {
@@ -87,13 +152,13 @@ onMounted(() => {
 
     const parsed = JSON.parse(value)
 
-    if (parsed.type === "done") {
+    if (parsed.type === 'done') {
       questionsLoaded.value = true
       close()
       return
     }
 
-    if (parsed.type === "reasoning") {
+    if (parsed.type === 'reasoning') {
       if (reasoningBox.text.endsWith(parsed.text)) return
       if (parsed.text.startsWith(reasoningBox.text.slice(-100))) {
         const overlap = reasoningBox.text.slice(-100)
@@ -118,7 +183,11 @@ onMounted(() => {
   })
 })
 
-sync(currentIndex, props.quizAttempt, selectedOptions, questions)
+onUnmounted(() => {
+  Loading.remove()
+})
+
+sync(currentIndex, props.quizAttempt, lastAnswer, submitting)
 </script>
 
 <template>
@@ -128,33 +197,18 @@ sync(currentIndex, props.quizAttempt, selectedOptions, questions)
     <div
       class="md:max-w-[85vw] mx-auto w-full flex flex-col gap-6 p-6 md:p-0 md:mb-10"
     >
-      <div class="flex items-center gap-4 md:mt-10">
-        <Link
-          href="/dashboard"
-          class="w-8 h-8 border border-[#2a2a30] flex items-center justify-center hover:border-gray-500 transition-colors"
-        >
-          <svg
-            class="w-4 h-4 text-gray-400"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-        </Link>
-        <span class="text-xs text-gray-500 tracking-widest uppercase">
-          {{ quizAttempt.quizType }}
-        </span>
+      <div class="md:mt-10">
+        <BackButton
+          :label="quizAttempt.quizType ? `${quizAttempt.quizType} quiz` : ''"
+        />
       </div>
 
       <div class="flex items-center gap-3">
         <div class="flex-1 h-1 bg-[#1a1a20]">
-          <div class="h-full w-1/3 bg-[#3aff8c]" />
+          <div
+            class="h-full bg-[#3aff8c] transition-all duration-300 ease-out"
+            :style="{ width: progressPercent + '%' }"
+          />
         </div>
         <div class="flex items-center gap-2">
           <Transition name="fade">
@@ -178,6 +232,7 @@ sync(currentIndex, props.quizAttempt, selectedOptions, questions)
         :questions="questions"
         :current-index="currentIndex"
         :selected-options="selectedOptions"
+        @change-index="currentIndex = $event"
       />
 
       <LoadingSkeleton
@@ -196,6 +251,8 @@ sync(currentIndex, props.quizAttempt, selectedOptions, questions)
         @select-option="selectOption"
         @go-next="goNext"
         @go-previous="goPrevious"
+        @submit="goNext(true)"
+        :is-last-question="isLastQuestion"
       />
     </div>
   </div>

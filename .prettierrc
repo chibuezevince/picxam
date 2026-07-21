@@ -1,4 +1,9 @@
 {
     "semi": false,
-    "singleAttributePerLine": true
+    "singleAttributePerLine": true,
+    "trailingComma": "all",
+    "singleQuote": true,
+    "htmlWhitespaceSensitivity": "css",
+    "vueIndentScriptAndStyle": false,
+    "printWidth": 80
 }

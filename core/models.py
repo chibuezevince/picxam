@@ -65,9 +65,23 @@ class QuizAttempt(models.Model):
     quiz = models.ForeignKey(
         Quiz, on_delete=models.CASCADE, related_name="quiz_attempts"
     )
-    score = models.IntegerField(null=True, blank=True)
+
+    @property
+    def correct_count(self):
+        return self.answers.filter(is_correct=True).count()
+
+    @property
+    def incorrect_count(self):
+        return self.answers.filter(is_correct=False).count()
+
+    @property
+    def score(self):
+        total = self.quiz.questions.count()
+        if total == 0:
+            return 0
+        return round((self.correct_count / total) * 100)
+
     current_index = models.IntegerField(default=1, blank=False)
-    is_completed = models.BooleanField(default=False)
     questions_generated = models.BooleanField(default=False)
     reasoning = models.TextField(blank=True, default="")
     started_at = models.DateTimeField(null=True, blank=True)

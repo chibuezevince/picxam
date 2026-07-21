@@ -22,5 +22,5 @@ urlpatterns = [
     path("quiz/<str:attempt_reference>/", views.start_quiz, name="start_quiz"),
     path("quiz/<str:attempt_reference>/stream/", views.stream_questions, name="stream_questions"),
     path("quiz/<str:attempt_reference>/sync/", QuizController.as_view(), name="sync_quiz"),
-    
+    path("quiz/<str:attempt_reference>/summary/", views.quiz_summary, name="quiz_summary"),
 ]

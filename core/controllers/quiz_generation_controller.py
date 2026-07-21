@@ -10,7 +10,7 @@ from threading import Thread
 from core.ai_service import generate_questions
 from core.forms import QuizGenerationForm
 from core.helpers import extract_images, get_relative_path, upload_file
-from core.models import Document, DocumentImage, Quiz, QuizAttempt, QuizType
+from core.models import Document, DocumentImage, Quiz, QuizAttempt
 
 
 def error(req, errors: dict, status=422):
@@ -30,15 +30,16 @@ def handle(request):
     content_hash = hashlib.sha256(content).hexdigest()
     uploaded_document.seek(0)
 
-    existing = Document.objects.filter(content_hash=content_hash).first()
-    # @TODO: Uncomment
-    # if existing:
-    #     return error(
-    #         request,
-    #         dict(
-    #             document="You have uploaded this document before. You may generate a new quiz by visiting here"
-    #         ),
-    #     )
+    existing = Document.objects.filter(
+        user=request.user, content_hash=content_hash
+    ).first()
+    if existing:
+        return error(
+            request,
+            dict(
+                document="You have uploaded this document before. You may generate a new quiz by visiting here"
+            ),
+        )
 
     rel_path = upload_file(uploaded_document, "documents")
     abs_path = os.path.join(settings.MEDIA_ROOT, rel_path)
@@ -73,7 +74,7 @@ def handle(request):
         user=request.user,
         quiz=quiz,
         thinking_effort=form.cleaned_data["thinking_effort"],
-        difficulty=form.cleaned_data["difficulty"]
+        difficulty=form.cleaned_data["difficulty"],
     )
 
     document_images = list(document.document_images.all())

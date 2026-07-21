@@ -42,7 +42,7 @@ import { Toaster } from "vue-sonner"
       style: {
         background: '#0b0b0d',
         color: '#ffffff',
-        borderRadius: '12px',
+        borderRadius: '0px',
         padding: '12px 14px',
         fontFamily: 'var(--font-sans)',
         boxShadow: '0 10px 30px rgba(0,0,0,0.35)',
